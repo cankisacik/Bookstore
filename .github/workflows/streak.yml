@@ -1,0 +1,72 @@
+name: Streak Keeper
+
+on:
+  # Manual trigger with commit count option
+  workflow_dispatch:
+    inputs:
+      commit_count:
+        description: 'Number of commits (1-3)'
+        required: false
+        default: '1'
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+  
+  # Optional: Auto-run daily at 11 PM UTC (adjust to your timezone)
+  # Uncomment the lines below if you want automatic daily commits
+  # schedule:
+  #   - cron: '0 23 * * *'
+
+jobs:
+  streak:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+      
+      - name: Make commits
+        run: |
+          # Get commit count (default to 1 for scheduled runs)
+          COUNT="${{ github.event.inputs.commit_count }}"
+          COUNT=${COUNT:-1}
+          
+          # Letters to cycle through
+          LETTERS="abcdefghijklmnopqrstuvwxyz"
+          
+          for i in $(seq 1 $COUNT); do
+            # Get current length of streak log, use it to pick next letter
+            if [ -f "STREAK.md" ]; then
+              CURRENT_LENGTH=$(wc -c < STREAK.md | tr -d ' ')
+            else
+              CURRENT_LENGTH=0
+            fi
+            
+            # Pick letter based on position (cycles through alphabet)
+            LETTER_INDEX=$((CURRENT_LENGTH % 26))
+            LETTER=${LETTERS:$LETTER_INDEX:1}
+            
+            # Append letter to file
+            echo -n "$LETTER" >> STREAK.md
+            
+            # Stage and commit
+            git add STREAK.md
+            git commit -m "streak: +$LETTER ($(date -u '+%Y-%m-%d %H:%M:%S UTC'))"
+            
+            # Small delay between commits so they have different timestamps
+            if [ $i -lt $COUNT ]; then
+              sleep 2
+            fi
+          done
+      
+      - name: Push changes
+        run: git push
