@@ -1,2 +1,2 @@
 # Streak Log
-nopqrstuvwxyzabcdefghijklmnopqrstuvwxyza
+nopqrstuvwxyzabcdefghijklmnopqrstuvwxyzab
