@@ -181,7 +181,7 @@ bookstore-project/
 ### Create a Book (POST)
 
 ```bash
-curl -X POST http://128.251.120.64/books \
+curl -X POST http://31.69.420.42/books \
   -H "Content-Type: application/json" \
   -d '{
     "isbn": "1234567890",
@@ -198,7 +198,7 @@ curl -X POST http://128.251.120.64/books \
 ### Update a Book (PUT)
 
 ```bash
-curl -X PUT http://128.251.120.64/books/<book_id> \
+curl -X PUT http://31.69.420.42/books/<book_id> \
   -H "Content-Type: application/json" \
   -d '{"price": 24.99, "title": "Updated Title"}'
 ```
@@ -206,13 +206,13 @@ curl -X PUT http://128.251.120.64/books/<book_id> \
 ### Delete a Book (DELETE)
 
 ```bash
-curl -X DELETE http://128.251.120.64/books/<book_id>
+curl -X DELETE http://31.69.420.42/books/<book_id>
 ```
 
 ### Health Check
 
 ```bash
-curl http://128.251.120.64/health
+curl http://31.69.420.42/health
 ```
 
 Response:
